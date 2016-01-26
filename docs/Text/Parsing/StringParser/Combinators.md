@@ -188,4 +188,12 @@ manyTill :: forall a end. Parser a -> Parser end -> Parser (List a)
 
 Parse values until a terminator.
 
+#### `atEnd`
+
+``` purescript
+atEnd :: forall a. Parser a -> Parser a -> Parser a
+```
+
+Return alternate value if end of input is reached.
+
 

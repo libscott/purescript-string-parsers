@@ -30,14 +30,15 @@ every time we match a character.
 ``` purescript
 data ParseError
   = ParseError String
+  | EndOfInput
 ```
 
 The type of parsing errors.
 
 ##### Instances
 ``` purescript
-instance showParseError :: Show ParseError
-instance eqParseError :: Eq ParseError
+Show ParseError
+Eq ParseError
 ```
 
 #### `Parser`
@@ -52,15 +53,15 @@ continuations for failure and success.
 
 ##### Instances
 ``` purescript
-instance functorParser :: Functor Parser
-instance applyParser :: Apply Parser
-instance applicativeParser :: Applicative Parser
-instance altParser :: Alt Parser
-instance plusParser :: Plus Parser
-instance alternativeParser :: Alternative Parser
-instance bindParser :: Bind Parser
-instance monadParser :: Monad Parser
-instance monadPlusParser :: MonadPlus Parser
+Functor Parser
+Apply Parser
+Applicative Parser
+Alt Parser
+Plus Parser
+Alternative Parser
+Bind Parser
+Monad Parser
+MonadPlus Parser
 ```
 
 #### `unParser`
