@@ -25,13 +25,16 @@ type Pos = Int
 type PosString = { str :: String, pos :: Pos }
 
 -- | The type of parsing errors.
-data ParseError = ParseError String
+data ParseError = ParseError String | EndOfInput
 
 instance showParseError :: Show ParseError where
   show (ParseError msg) = msg
+  show (EndOfInput) = "EndOfInput"
 
 instance eqParseError :: Eq ParseError where
   eq (ParseError x) (ParseError y) = x == y
+  eq EndOfInput EndOfInput = true
+  eq _ _ = false
 
 -- | A parser is represented as a function which takes a pair of
 -- | continuations for failure and success.

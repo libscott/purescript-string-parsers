@@ -30,7 +30,9 @@ many1 p = do
 
 -- | Provide an error message in case of failure.
 (<?>) :: forall a. Parser a -> String -> Parser a
-(<?>) p msg = p <|> fail msg
+(<?>) p msg = Parser (\s fc sc ->
+  let fc1 pos err = fc pos (if err == EndOfInput then err else ParseError msg)
+  in  unParser p s fc1 sc)
 
 -- | Take the fixed point of a parser function. This function is sometimes useful when building recursive parsers.
 fix :: forall a. (Parser a -> Parser a) -> Parser a
@@ -138,3 +140,11 @@ manyTill p end = scan
   scan = (end *> return Nil) <|> do x <- p
                                     xs <- scan
                                     return (Cons x xs)
+
+-- | Return alternate value if end of input is reached.
+atEnd :: forall a. Parser a -> Parser a -> Parser a
+atEnd default parser = Parser (\s failure success ->
+                                unParser parser s (\pos err ->
+                                  if err == EndOfInput
+                                    then unParser default s failure success
+                                    else failure s.pos err) success)

@@ -58,6 +58,9 @@ tryTest :: Parser String
 tryTest = try ((++) <$> string "aa" <*> string "bb") <|>
           (++) <$> string "aa" <*> string "cc"
 
+endTestString :: Parser String
+endTestString = (++) <$> string "end" <*> atEnd (pure " is ok") (string "fail")
+
 main = do
   parseTest nested "(((a)))"
   parseTest (many (string "a")) "aaa"
@@ -76,3 +79,9 @@ main = do
   parseTest (many1 anyDigit) "56789:" 
   parseTest alphaNum "A"
   parseTest (string "bc" <|> string "bd") "bd"
+  parseTest endTestString "end"
+  parseTest (atEnd (pure 'b') (char 'a')) ""
+  parseTest (atEnd (pure 'b') anyChar) ""
+  parseTest (atEnd (pure 2) digit) ""
+  parseTest (atEnd (fail "ok") anyChar) ""
+  parseTest (atEnd (pure "fail") (string "ok")) "ok"

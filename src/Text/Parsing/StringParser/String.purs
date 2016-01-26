@@ -32,7 +32,7 @@ import Text.Parsing.StringParser
 -- | Match the end of the file.
 eof :: Parser Unit
 eof = Parser (\s fc sc -> case s of
-  { str = str, pos = i } | i < length str -> fc i (ParseError "Expected EOF")
+  { str = str, pos = i } | i < length str -> fc i EndOfInput
   _ -> sc unit s)
 
 -- | Match any character.
@@ -40,7 +40,7 @@ anyChar :: Parser Char
 anyChar = Parser (\s fc sc -> case s of
   { str = str, pos = i } -> case charAt i str of
     Just chr -> sc chr { str: str, pos: i + 1 }
-    Nothing -> fc i (ParseError "Unexpected EOF"))
+    Nothing -> fc i EndOfInput)
 
 -- | Match any digit.
 anyDigit :: Parser Char
@@ -52,9 +52,13 @@ anyDigit = try do
 
 -- | Match the specified string.
 string :: String -> Parser String
-string nt = Parser (\s fc sc -> case s of
-  { str = str, pos = i } | indexOf' nt i str == Just i -> sc nt { str: str, pos: i + length nt }
-  { pos = i } -> fc i (ParseError $ "Expected '" ++ nt ++ "'."))
+string nt = Parser (\{ str = str, pos = i } fc sc -> do
+  let ntLen = length nt
+  if indexOf' nt i str == Just i
+     then sc nt { str: str, pos: i + ntLen }
+     else if ntLen + i <= length str
+        then fc i (ParseError $ "Expected '" ++ nt ++ "'.")
+        else fc i EndOfInput)
 
 -- | Match a character satisfying the given predicate.
 satisfy :: (Char -> Boolean) -> Parser Char
