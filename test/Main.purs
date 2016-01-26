@@ -74,3 +74,5 @@ main = do
   parseTest tryTest "aacc"
   parseTest (many1 anyDigit) "01234/" 
   parseTest (many1 anyDigit) "56789:" 
+  parseTest alphaNum "A"
+  parseTest (string "bc" <|> string "bd") "bd"
