@@ -5,6 +5,7 @@ module Text.Parsing.StringParser where
 import Prelude
 
 import Data.Either (Either(..))
+import Data.Generic
 
 import Control.Alt
 import Control.Alternative
@@ -26,6 +27,8 @@ type PosString = { str :: String, pos :: Pos }
 
 -- | The type of parsing errors.
 data ParseError = ParseError String | EndOfInput
+
+derive instance genericParseError :: Generic ParseError
 
 instance showParseError :: Show ParseError where
   show (ParseError msg) = msg

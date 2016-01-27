@@ -37,6 +37,7 @@ The type of parsing errors.
 
 ##### Instances
 ``` purescript
+Generic ParseError
 Show ParseError
 Eq ParseError
 ```
